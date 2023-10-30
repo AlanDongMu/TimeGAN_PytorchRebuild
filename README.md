@@ -3,7 +3,7 @@ Use pytorch to rebulid TimeGAN.
 
 ## Reference
 Reference: Jinsung Yoon, Daniel Jarrett, Mihaela van der Schaar, "Time-series Generative Adversarial Networks," Neural Information Processing Systems (NeurIPS), 2019.
-Paper Link: https://papers.nips.cc/paper/8789-time-series-generative-adversarial-networks
+Paper Link: https://papers.nips.cc/paper/8789-time-series-generative-adversarial-networks  
 Original Code: https://github.com/jsyoon0823/TimeGAN
 
 ## Requirement
