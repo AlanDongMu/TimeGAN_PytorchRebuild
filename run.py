@@ -1,6 +1,6 @@
 import numpy as np
 import timegan
-from metrics.discriminative_metrics_pytorch import discriminative_score_metrics
+from metrics.discriminative_metrics import discriminative_score_metrics
 from metrics.predictive_metrics import predictive_score_metrics
 from metrics.visualization_metrics import visualization
 from utils import extract_time
