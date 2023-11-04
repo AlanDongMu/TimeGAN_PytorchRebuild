@@ -86,6 +86,7 @@ class TimeGAN:
             # E_solver
             self.G_loss_S = self.MSELoss(self.H[:, 1:, :], self.H_hat_supervise[:, :-1, :])
             self.E_loss = self.E_loss0 + 0.1 * self.G_loss_S
+            self.E_loss.backward()
         self.optim_embedder.step()
         self.optim_recovery.step()
 
