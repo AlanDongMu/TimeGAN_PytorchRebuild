@@ -4,7 +4,7 @@ import numpy as np
 from networks import Embedder, Recovery, Generator, Discriminator, Supervisor
 from utils import batch_generator, random_generator, MinMaxScaler, extract_time
 
-
+torch.autograd.set_detect_anomaly(True)
 class TimeGAN:
     def __init__(self, opt, ori_data):
 
@@ -44,12 +44,13 @@ class TimeGAN:
 
         # Set training batch
         self.X, self.T = batch_generator(self.ori_data, self.ori_time, self.opt.batch_size)
-        self.X = torch.tensor(self.X, dtype=torch.float32).to(self.device)
+        self.X = torch.tensor(np.array(self.X), dtype=torch.float32).to(self.device)
         # Random vector generation
         self.Z = random_generator(self.opt.batch_size, self.para['input_dim'], self.max_seq_len, self.T)
-        self.Z = torch.tensor(self.Z, dtype=torch.float32).to(self.device)
+        self.Z = torch.tensor(np.array(self.Z), dtype=torch.float32).to(self.device)
 
         # total networks forward
+    def batch_forward(self):
         self.H = self.embedder(self.X)
         self.X_tilde = self.recovery(self.H)
         self.H_hat_supervise = self.supervisor(self.H)
@@ -101,7 +102,7 @@ class TimeGAN:
         self.optim_generator.step()
         self.optim_supervisor.step()
 
-    def train_generator(self):
+    def train_generator(self,join_train=False):
         # G_solver
         self.optim_generator.zero_grad()
         self.optim_supervisor.zero_grad()
@@ -116,10 +117,14 @@ class TimeGAN:
                       self.opt.gamma * self.G_loss_U_e + \
                       torch.sqrt(self.G_loss_S) * 100 + \
                       self.G_loss_V * 100
+        if not join_train:
+            self.G_loss.backward()
+        else:
+            self.G_loss.backward(retain_graph=True)
 
-        self.G_loss.backward()
         self.optim_generator.step()
         self.optim_supervisor.step()
+
 
     def train_discriminator(self):
         # D_solver

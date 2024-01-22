@@ -16,6 +16,7 @@ def train(opt, ori_data):
     print('Start Embedding Network Training')
     for i in range(opt.iterations):
         model.gen_batch()
+        model.batch_forward()
         model.train_embedder()
         if i % per_print_num == 0:
             print('step: ' + str(i) + '/' + str(opt.iterations) +
@@ -26,6 +27,7 @@ def train(opt, ori_data):
     print('Start Training with Supervised Loss Only')
     for i in range(opt.iterations):
         model.gen_batch()
+        model.batch_forward()
         model.train_supervisor()
         if i % per_print_num == 0:
             print('step: ' + str(i) + '/' + str(opt.iterations) +
@@ -37,10 +39,13 @@ def train(opt, ori_data):
         # Generator training (twice more than discriminator training)
         for kk in range(2):
             model.gen_batch()
-            model.train_generator()
+            model.batch_forward()
+            model.train_generator(join_train=True)
+            model.batch_forward()
             model.train_embedder(join_train=True)
         # Discriminator training
         model.gen_batch()
+        model.batch_forward()
         model.train_discriminator()
 
         # Print multiple checkpoints
